@@ -1,16 +1,56 @@
 ---
+import { Image } from 'astro:assets';
+import heroImg from '../assets/images/hero-bar.jpg'; // replace with any local image in /src/assets
 
+const page = {
+  title: 'Dreaming Creek Brewery — Richmond, Kentucky',
+  tagline: 'Where good beer meets good company.',
+  description: 'Locally brewed craft beer and community vibes from Richmond’s own Dreaming Creek Brewery.',
+};
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-charcoal text-cream antialiased">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{page.title}</title>
+    <meta name="description" content={page.description} />
+    <link rel="icon" href="/favicon.png" />
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <!-- Hero Section -->
+    <section class="relative w-full h-[70vh] overflow-hidden">
+      <Image
+        src={heroImg}
+        alt="Dreaming Creek Brewery taproom"
+        widths={[640, 960, 1280, 1600, 2000]}
+        sizes="(max-width: 900px) 100vw, 1200px"
+        format="avif"
+        quality={70}
+        class="absolute inset-0 w-full h-full object-cover"
+        loading="eager"
+        decoding="async"
+      />
+      <div class="absolute inset-0 bg-black/50"></div>
+      <div class="relative z-10 flex flex-col items-center justify-center h-full text-center px-6">
+        <h1 class="text-4xl md:text-6xl font-bold mb-4">{page.title}</h1>
+        <p class="text-xl md:text-2xl text-cream/90">{page.tagline}</p>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="max-w-4xl mx-auto p-8 md:p-16 text-center">
+      <h2 class="text-3xl font-semibold mb-4">Brewed with Pride in Richmond, KY</h2>
+      <p class="text-lg text-cream/80 leading-relaxed">
+        Dreaming Creek Brewery is a locally owned and operated taproom dedicated to quality, creativity,
+        and community. We craft small-batch beers inspired by Kentucky roots and the people who make this town home.
+      </p>
+    </section>
+
+    <!-- Placeholder Footer -->
+    <footer class="mt-auto bg-oak/20 py-6 text-center text-sm text-cream/70">
+      © {new Date().getFullYear()} Dreaming Creek Brewery · Richmond, Kentucky
+    </footer>
+  </body>
 </html>
