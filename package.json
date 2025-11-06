@@ -1,0 +1,23 @@
+{
+  "name": "dreaming-creek",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^4.3.10",
+    "@astrojs/prefetch": "^0.4.1",
+    "@astrojs/sitemap": "^3.6.0",
+    "@tailwindcss/vite": "^4.1.17",
+    "astro": "^5.15.4",
+    "tailwindcss": "^4.1.17"
+  },
+  "devDependencies": {
+    "astro-compress": "^2.3.8",
+    "sharp": "^0.34.5"
+  }
+}
