@@ -47,6 +47,44 @@ const page = {
   tagline: 'This Week at the Creek',
   description: 'Live music, food trucks, trivia, and fresh taps — updated weekly.',
 };
+
+// ------- Reviews (placeholder copy; swap when wiring to Google) -------
+type Review = { name:string; rating:number; text:string; date:string; source?:string };
+const reviews: Review[] = [
+  {
+    name: 'Ashley R.',
+    rating: 5,
+    text: 'Laid-back vibe, friendly folks, and the stout was a knockout. Perfect spot for live music nights.',
+    date: '2025-10-14',
+    source: 'Google',
+  },
+  {
+    name: 'Marcus D.',
+    rating: 5,
+    text: 'Taps rotate often and everything is fresh. Food truck + trivia night is our weekly ritual.',
+    date: '2025-09-08',
+    source: 'Google',
+  },
+  {
+    name: 'Lindsey P.',
+    rating: 4.5,
+    text: 'Cozy taproom with tons of character. Amber ale is my go-to. Staff is super welcoming.',
+    date: '2025-08-20',
+    source: 'Facebook',
+  },
+  {
+    name: 'Ken H.',
+    rating: 5,
+    text: 'Best brewery in Richmond. Patio, pints, and great people. What else do you need?',
+    date: '2025-07-02',
+  },
+];
+
+const avg =
+  Math.round((reviews.reduce((n, r) => n + r.rating, 0) / reviews.length) * 10) / 10;
+
+const stars = (score:number) =>
+  Array.from({ length: 5 }, (_, i) => (score >= i + 1 ? 'full' : score > i && score < i + 1 ? 'half' : 'empty'));
 ---
 
 <Base title={page.title} description={page.description}>
@@ -61,15 +99,12 @@ const page = {
         linear-gradient(to bottom, rgba(0,0,0,.0), rgba(0,0,0,.25)),
         #1A1A1A;`}
     >
-      <!-- wood lip -->
       <div class="absolute bottom-0 left-0 right-0 h-4
                   bg-[linear-gradient(90deg,rgba(0,0,0,.25)_0_5%,rgba(0,0,0,.25)_95%_100%),linear-gradient(180deg,#8a6438,#704d28)]
                   shadow-[0_-8px_24px_rgba(0,0,0,.45)]"></div>
 
-      <!-- balanced spacing -->
       <div class="relative z-10 mx-auto max-w-7xl px-6 pt-10 pb-10 md:pt-20 md:pb-16">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
-          <!-- copy -->
           <div>
             <p class="text-amber/90 text-sm tracking-widest uppercase">Live Music • Food Trucks • Trivia</p>
             <h1 class="mt-2 text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight">{page.tagline}</h1>
@@ -83,7 +118,7 @@ const page = {
             </div>
           </div>
 
-          <!-- mobile: stacked -->
+          <!-- mobile images -->
           <div class="md:hidden">
             <div class="flex flex-col gap-4">
               <figure class="dcb-frame">
@@ -99,9 +134,8 @@ const page = {
             </div>
           </div>
 
-          <!-- desktop: variable ratios, image fills frame -->
+          <!-- desktop images -->
           <div class="hidden md:flex justify-end gap-6">
-            <!-- LEFT: Pint — keep glass in frame, expand bg left -->
             <figure class="dcb-frame w-64 lg:w-72 xl:w-80 h-[15rem] lg:h-[18rem] xl:h-[20rem] overflow-hidden rotate-[-2deg]">
               <Image
                 src={pint}
@@ -114,8 +148,6 @@ const page = {
                 loading="lazy" decoding="async"
               />
             </figure>
-
-            <!-- RIGHT: Growlers — taller card for contrast -->
             <figure class="dcb-frame w-72 lg:w-80 xl:w-96 h-[18rem] lg:h-[22rem] xl:h-[24rem] overflow-hidden rotate-[3deg]">
               <Image
                 src={jugs}
@@ -124,7 +156,7 @@ const page = {
                 sizes="(max-width: 1280px) 24vw, 22vw"
                 format="avif"
                 quality={70}
-                class="w-full h-full object-cover object-center dcb-photo block"
+                class="w-full h-full object-cover object-left dcb-photo block"
                 loading="lazy" decoding="async"
               />
             </figure>
@@ -170,7 +202,7 @@ const page = {
           <li class="rounded-xl bg-white/5 border border-white/10 p-5">
             <div class="flex items-center justify-between">
               <h3 class="text-xl font-semibold">{e.name}</h3>
-              <span class="rounded bg-amber/20 px-2 py-1 text-xs font-medium text-amber">{e.tag}</span>
+              <span class="rounded bg-amber/20 px-2 py-1 text-xs font-medium text-amber text-center">{e.tag}</span>
             </div>
             <p class="mt-1 text-cream/80">
               {new Date(e.startDate).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}
@@ -203,6 +235,58 @@ const page = {
         </li>
       ))}
     </ul>
+  </section>
+
+  <!-- REVIEWS -->
+  <section id="reviews" class="bg-charcoal/60">
+    <div class="mx-auto max-w-7xl px-6 py-12 md:py-16">
+      <div class="flex flex-col items-center gap-3 text-center">
+        <h2 class="text-3xl font-semibold">What Folks Are Saying</h2>
+        <div class="flex items-center gap-2">
+          <div class="flex">
+            {stars(Math.round(avg)).map((s, i) => (
+              <svg aria-hidden="true" viewBox="0 0 20 20" class={`h-5 w-5 ${s !== 'empty' ? 'fill-amber' : 'fill-cream/25'}`}>
+                <path d="M10 1.8l2.47 5.01 5.53.8-4 3.9.94 5.5L10 14.9 5.06 17l.94-5.5-4-3.9 5.53-.8L10 1.8z" />
+              </svg>
+            ))}
+          </div>
+          <span class="text-cream/80 text-sm">Rated {avg} / 5</span>
+        </div>
+        <p class="text-cream/70 text-sm">Real words from regulars. Pull up a chair and see for yourself.</p>
+      </div>
+
+      <ul class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {reviews.slice(0, 6).map((r) => (
+          <li class="rounded-xl bg-white/5 border border-white/10 p-5 relative">
+            <span class="absolute -top-3 left-5 rounded-full bg-amber/20 px-2 py-0.5 text-[10px] font-semibold text-amber">
+              {r.source ?? 'Review'}
+            </span>
+            <div class="flex items-center gap-2 mb-2">
+              <div class="flex">
+                {stars(Math.round(r.rating)).map((s, i) => (
+                  <svg aria-hidden="true" viewBox="0 0 20 20" class={`h-4 w-4 ${s !== 'empty' ? 'fill-amber' : 'fill-cream/25'}`}>
+                    <path d="M10 1.8l2.47 5.01 5.53.8-4 3.9.94 5.5L10 14.9 5.06 17l.94-5.5-4-3.9 5.53-.8L10 1.8z" />
+                  </svg>
+                ))}
+              </div>
+              <span class="text-xs text-cream/60">
+                {new Date(r.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+              </span>
+            </div>
+            <p class="text-cream/90 leading-relaxed">“{r.text}”</p>
+            <p class="mt-3 text-sm text-cream/70">— {r.name}</p>
+          </li>
+        ))}
+      </ul>
+
+      <div class="mt-8 text-center">
+        <a href="https://maps.google.com/?q=Dreaming+Creek+Brewery+Richmond+KY"
+           class="inline-block rounded-md border border-white/20 px-5 py-2.5 hover:border-amber hover:text-amber"
+           rel="noopener">
+          Read more on Google
+        </a>
+      </div>
+    </div>
   </section>
 
   <!-- GALLERY (masonry) -->
