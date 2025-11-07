@@ -1,56 +1,242 @@
 ---
+import Base from '../layouts/base.astro';
 import { Image } from 'astro:assets';
-import heroImg from '../assets/images/hero-bar.jpg'; // replace with any local image in /src/assets
+
+// IMAGES (hero thumbs + gallery)
+import bar from '../assets/images/bar.webp';
+import brandmerch from '../assets/images/brandmerch.webp';
+import entrance from '../assets/images/entrance.webp';
+import jugs from '../assets/images/jugs.webp';
+import pint from '../assets/images/pint.webp';
+import stills from '../assets/images/stills.webp';
+import tables from '../assets/images/tables.webp';
+import tables1 from '../assets/images/tables1.webp';
+import taps from '../assets/images/taps.webp';
+
+// Beers (Untappd JSON endpoint with graceful fallback)
+let beers: Array<{name:string; style?:string; abv?:number}> = [];
+try {
+  const r = await fetch('/api/taps.json');
+  if (r?.ok) beers = (await r.json())?.beers ?? [];
+} catch {}
+if (beers.length === 0) {
+  beers = [
+    { name: 'Sunlit Sky', style: 'American Wheat Ale', abv: 5.2 },
+    { name: 'Low Hollow', style: 'Brown Ale', abv: 5.0 },
+    { name: 'Waypoint IPA', style: 'India Pale Ale', abv: 6.5 },
+    { name: 'Creek Kolsch', style: 'Kölsch', abv: 4.8 },
+    { name: 'Driftwood Amber', style: 'American Amber', abv: 5.4 },
+    { name: 'Nightfall Stout', style: 'Milk Stout', abv: 5.8 },
+  ];
+}
+
+const events = [
+  { name: 'Live Music — Midnight Ramblers', startDate: '2025-12-19T19:00:00-05:00', tag: 'Live Music' },
+  { name: 'Food Truck — Smokehouse BBQ',   startDate: '2025-12-20T17:00:00-05:00', tag: 'Food Truck' },
+  { name: 'Trivia Night (Teams up to 6)',  startDate: '2025-12-22T19:00:00-05:00', tag: 'Trivia' },
+  { name: 'Live Music — Carolyn Mitchell', startDate: '2025-12-26T19:00:00-05:00', tag: 'Live Music' },
+];
+
+const trucks = [
+  { name: 'Smokey Ridge BBQ', startDate: '2025-12-06T17:00:00-05:00', cuisine: 'BBQ' },
+  { name: 'Taco Titan',       startDate: '2025-12-07T17:00:00-05:00', cuisine: 'Mexican' },
+];
 
 const page = {
   title: 'Dreaming Creek Brewery — Richmond, Kentucky',
-  tagline: 'Where good beer meets good company.',
-  description: 'Locally brewed craft beer and community vibes from Richmond’s own Dreaming Creek Brewery.',
+  tagline: 'This Week at the Creek',
+  description: 'Live music, food trucks, trivia, and fresh taps — updated weekly.',
 };
 ---
 
-<!DOCTYPE html>
-<html lang="en" class="h-full bg-charcoal text-cream antialiased">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{page.title}</title>
-    <meta name="description" content={page.description} />
-    <link rel="icon" href="/favicon.png" />
-  </head>
-  <body class="min-h-screen flex flex-col">
-    <!-- Hero Section -->
-    <section class="relative w-full h-[70vh] overflow-hidden">
-      <Image
-        src={heroImg}
-        alt="Dreaming Creek Brewery taproom"
-        widths={[640, 960, 1280, 1600, 2000]}
-        sizes="(max-width: 900px) 100vw, 1200px"
-        format="avif"
-        quality={70}
-        class="absolute inset-0 w-full h-full object-cover"
-        loading="eager"
-        decoding="async"
-      />
-      <div class="absolute inset-0 bg-black/50"></div>
-      <div class="relative z-10 flex flex-col items-center justify-center h-full text-center px-6">
-        <h1 class="text-4xl md:text-6xl font-bold mb-4">{page.title}</h1>
-        <p class="text-xl md:text-2xl text-cream/90">{page.tagline}</p>
+<Base title={page.title} description={page.description}>
+  <!-- HERO -->
+  <section class="relative overflow-hidden">
+    <div
+      class="relative w-full min-h-[520px] md:min-h-[60vh]"
+      style={`background:
+        radial-gradient(1200px 600px at 15% 30%, rgba(213,162,83,.35), transparent 60%),
+        radial-gradient(900px 500px at 85% 20%, rgba(213,162,83,.22), transparent 65%),
+        repeating-radial-gradient(circle at 50% -20%, rgba(255,255,255,.05) 0 2px, transparent 2px 6px),
+        linear-gradient(to bottom, rgba(0,0,0,.0), rgba(0,0,0,.25)),
+        #1A1A1A;`}
+    >
+      <!-- wood lip -->
+      <div class="absolute bottom-0 left-0 right-0 h-4
+                  bg-[linear-gradient(90deg,rgba(0,0,0,.25)_0_5%,rgba(0,0,0,.25)_95%_100%),linear-gradient(180deg,#8a6438,#704d28)]
+                  shadow-[0_-8px_24px_rgba(0,0,0,.45)]"></div>
+
+      <!-- balanced spacing -->
+      <div class="relative z-10 mx-auto max-w-7xl px-6 pt-10 pb-10 md:pt-20 md:pb-16">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+          <!-- copy -->
+          <div>
+            <p class="text-amber/90 text-sm tracking-widest uppercase">Live Music • Food Trucks • Trivia</p>
+            <h1 class="mt-2 text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight">{page.tagline}</h1>
+            <div class="mt-6 flex flex-wrap gap-3">
+              <a href="#taplist" class="rounded-md bg-amber px-5 py-2.5 text-charcoal font-medium hover:bg-amber/90">
+                See what’s on tap
+              </a>
+              <a href="#events" class="rounded-md border border-white/20 px-5 py-2.5 hover:border-amber hover:text-amber">
+                Upcoming events
+              </a>
+            </div>
+          </div>
+
+          <!-- mobile: stacked -->
+          <div class="md:hidden">
+            <div class="flex flex-col gap-4">
+              <figure class="dcb-frame">
+                <Image src={pint} alt="Fresh pint at the bar"
+                  widths={[640, 800, 960]} sizes="100vw" format="avif" quality={70}
+                  class="w-full h-auto dcb-photo block" loading="lazy" decoding="async" />
+              </figure>
+              <figure class="dcb-frame">
+                <Image src={jugs} alt="Dreaming Creek growlers"
+                  widths={[640, 800, 960]} sizes="100vw" format="avif" quality={70}
+                  class="w-full h-auto dcb-photo block" loading="lazy" decoding="async" />
+              </figure>
+            </div>
+          </div>
+
+          <!-- desktop: variable ratios, image fills frame -->
+          <div class="hidden md:flex justify-end gap-6">
+            <!-- LEFT: Pint — keep glass in frame, expand bg left -->
+            <figure class="dcb-frame w-64 lg:w-72 xl:w-80 h-[15rem] lg:h-[18rem] xl:h-[20rem] overflow-hidden rotate-[-2deg]">
+              <Image
+                src={pint}
+                alt="Fresh pint at the bar"
+                widths={[768, 896, 1024, 1280]}
+                sizes="(max-width: 1280px) 22vw, 20vw"
+                format="avif"
+                quality={70}
+                class="w-full h-full object-cover object-left dcb-photo block"
+                loading="lazy" decoding="async"
+              />
+            </figure>
+
+            <!-- RIGHT: Growlers — taller card for contrast -->
+            <figure class="dcb-frame w-72 lg:w-80 xl:w-96 h-[18rem] lg:h-[22rem] xl:h-[24rem] overflow-hidden rotate-[3deg]">
+              <Image
+                src={jugs}
+                alt="Dreaming Creek growlers"
+                widths={[896, 1024, 1280, 1536]}
+                sizes="(max-width: 1280px) 24vw, 22vw"
+                format="avif"
+                quality={70}
+                class="w-full h-full object-cover object-center dcb-photo block"
+                loading="lazy" decoding="async"
+              />
+            </figure>
+          </div>
+        </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- About Section -->
-    <section class="max-w-4xl mx-auto p-8 md:p-16 text-center">
-      <h2 class="text-3xl font-semibold mb-4">Brewed with Pride in Richmond, KY</h2>
-      <p class="text-lg text-cream/80 leading-relaxed">
-        Dreaming Creek Brewery is a locally owned and operated taproom dedicated to quality, creativity,
-        and community. We craft small-batch beers inspired by Kentucky roots and the people who make this town home.
-      </p>
-    </section>
+  <!-- NOW POURING -->
+  <section id="taplist" class="mx-auto max-w-7xl px-6 py-12 md:py-16">
+    <h2 class="text-center text-3xl font-semibold">Now Pouring</h2>
+    <p class="mt-1 text-center text-cream/70">Updated from Untappd throughout the day.</p>
 
-    <!-- Placeholder Footer -->
-    <footer class="mt-auto bg-oak/20 py-6 text-center text-sm text-cream/70">
-      © {new Date().getFullYear()} Dreaming Creek Brewery · Richmond, Kentucky
-    </footer>
-  </body>
-</html>
+    <ul class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {beers.slice(0, 6).map((b) => (
+        <li class="rounded-xl bg-white/5 border border-white/10 p-5 shadow-[0_6px_16px_rgba(0,0,0,.25)]">
+          <div class="flex items-baseline justify-between">
+            <h3 class="text-xl font-bold">{b.name}</h3>
+            {b.abv && <span class="text-sm text-cream/70">{b.abv}% ABV</span>}
+          </div>
+          <p class="mt-1 text-cream/85">{b.style ?? 'Craft Beer'}</p>
+          <div class="mt-4 h-2 w-full rounded bg-amber/20">
+            <div class="h-2 rounded bg-amber" style={`width:${Math.min((b.abv ?? 5) * 12, 100)}%`}></div>
+          </div>
+        </li>
+      ))}
+    </ul>
+
+    <div class="mt-8 text-center">
+      <a href="/beers" class="inline-block rounded-md border border-white/20 px-4 py-2 text-sm hover:text-amber hover:border-amber">
+        View full tap list
+      </a>
+    </div>
+  </section>
+
+  <!-- UPCOMING EVENTS -->
+  <section id="events" class="bg-gradient-to-b from-oak/15 via-oak/10 to-charcoal/10">
+    <div class="mx-auto max-w-7xl px-6 py-12 md:py-16">
+      <h2 class="text-center text-3xl font-semibold">Upcoming Events</h2>
+      <ul class="mt-8 grid gap-4 sm:grid-cols-2">
+        {events.map((e) => (
+          <li class="rounded-xl bg-white/5 border border-white/10 p-5">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xl font-semibold">{e.name}</h3>
+              <span class="rounded bg-amber/20 px-2 py-1 text-xs font-medium text-amber">{e.tag}</span>
+            </div>
+            <p class="mt-1 text-cream/80">
+              {new Date(e.startDate).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}
+            </p>
+            <a href="/events" class="mt-3 inline-block text-amber hover:underline">Details</a>
+          </li>
+        ))}
+      </ul>
+
+      <div class="mt-8 text-center">
+        <a href="/events" class="inline-block rounded-md bg-amber px-5 py-2.5 text-charcoal font-medium hover:bg-amber/90">
+          View full calendar
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOD TRUCKS -->
+  <section id="food-trucks" class="mx-auto max-w-7xl px-6 py-12 md:py-16">
+    <h2 class="text-center text-3xl font-semibold">Food Truck Schedule</h2>
+    <ul class="mt-8 grid gap-4 sm:grid-cols-2">
+      {trucks.map((t) => (
+        <li class="rounded-xl bg-white/5 border border-white/10 p-5">
+          <h3 class="text-xl font-semibold">{t.name}</h3>
+          <p class="text-cream/80">{t.cuisine}</p>
+          <p class="text-cream/70 text-sm">
+            {new Date(t.startDate).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}
+          </p>
+          <a href="/food-trucks" class="mt-3 inline-block text-amber hover:underline">More info</a>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <!-- GALLERY (masonry) -->
+  <section class="bg-charcoal">
+    <div class="mx-auto max-w-7xl px-6 py-12 md:py-16">
+      <h2 class="text-center text-3xl font-semibold">From the Gallery</h2>
+      <div class="mt-8 columns-1 sm:columns-2 lg:columns-3 gap-4 [column-fill:_balance]">
+        {[bar, pint, taps, brandmerch, stills, jugs, entrance, tables, tables1].map((img, i) => (
+          <figure class="mb-4 break-inside-avoid dcb-frame">
+            <Image
+              src={img}
+              alt={`Dreaming Creek photo ${i+1}`}
+              widths={[640, 960, 1280]}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              format="avif"
+              quality={70}
+              class="w-full h-auto dcb-photo block"
+              loading="lazy" decoding="async"
+            />
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- VISIT -->
+  <section id="visit" class="mx-auto max-w-7xl px-6 py-12 md:py-16">
+    <div class="rounded-2xl border border-white/10 bg-oak/10 p-6 md:p-10 text-center">
+      <h2 class="text-3xl font-semibold mb-2">Visit the Taproom</h2>
+      <p class="text-cream/80">Pull up a chair, bring a friend, and catch the next show.</p>
+      <div class="mt-5 flex items-center justify-center gap-3">
+        <a href="/taproom" class="rounded-md bg-amber px-5 py-2.5 text-charcoal font-medium hover:bg-amber/90">Hours & Location</a>
+        <a href="/contact" class="rounded-md border border-white/20 px-5 py-2.5 hover:border-amber hover:text-amber">Contact</a>
+      </div>
+    </div>
+  </section>
+</Base>

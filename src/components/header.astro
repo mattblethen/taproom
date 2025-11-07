@@ -1,0 +1,96 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/images/logo.png';
+
+const nav = [
+  { href: '/', label: 'Home' },
+  { href: '/beers', label: 'Beers' },
+  { href: '/events', label: 'Events' },
+  { href: '/food-trucks', label: 'Food Trucks' },
+  { href: '/taproom', label: 'Taproom' },
+  { href: '/about', label: 'About' },
+  { href: '/contact', label: 'Contact' },
+];
+---
+
+<!-- Accessible, sticky header with a details/summary mobile menu (no JS required) -->
+<a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:bg-amber focus:text-charcoal focus:px-3 focus:py-1 focus:rounded">
+  Skip to content
+</a>
+
+<header class="sticky top-0 z-50 border-b border-white/10 bg-charcoal/90 backdrop-blur">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6">
+    <div class="flex h-32 items-center justify-between">
+      <!-- Brand -->
+      <a href="/" class="flex items-center gap-3">
+        <Image
+          src={logo}
+          alt="Dreaming Creek Brewery"
+          widths={[64, 96, 128]}
+          sizes="(max-width: 640px) 64px, 96px"
+          format="png"
+          class="h-20 w-20 rounded-full"
+          loading="eager"
+          decoding="async"
+        />
+        <span class="hidden sm:block font-semibold tracking-wide">Dreaming Creek Brewery</span>
+      </a>
+
+      <!-- Desktop nav -->
+      <nav aria-label="Primary" class="hidden md:block">
+        <ul class="flex items-center gap-6 text-sm">
+          {nav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class="text-cream/90 hover:text-amber transition-colors"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <!-- CTA (optional) -->
+      <div class="hidden md:block">
+        <a href="/events" class="inline-flex items-center rounded-md bg-amber px-3 py-2 text-sm font-medium text-charcoal hover:bg-amber/90">
+          Upcoming Events
+        </a>
+      </div>
+
+      <!-- Mobile menu -->
+      <details class="md:hidden">
+        <summary
+          class="list-none rounded p-2 text-cream/90 hover:text-amber cursor-pointer"
+          aria-label="Open menu"
+        >
+          <!-- hamburger -->
+          <span class="block h-0.5 w-6 bg-current mb-1"></span>
+          <span class="block h-0.5 w-6 bg-current mb-1"></span>
+          <span class="block h-0.5 w-6 bg-current"></span>
+        </summary>
+
+        <nav aria-label="Mobile" class="mt-3 rounded-lg border border-white/10 bg-charcoal/95 p-3">
+          <ul class="flex flex-col divide-y divide-white/10">
+            {nav.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  class="block py-3 text-cream/90 hover:text-amber"
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))}
+            <li class="pt-3">
+              <a href="/events" class="block rounded bg-amber px-3 py-2 text-center font-medium text-charcoal hover:bg-amber/90">
+                Upcoming Events
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>

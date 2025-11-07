@@ -1,0 +1,54 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/images/logo.png';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-auto border-t border-white/10 bg-charcoal">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 py-10 grid gap-8 md:grid-cols-3">
+    <!-- Brand / blurb -->
+    <div class="flex items-start gap-4">
+      <Image
+        src={logo}
+        alt="Dreaming Creek Brewery"
+        widths={[48, 64, 80]}
+        sizes="48px"
+        format="png"
+        class="h-12 w-12 rounded-full flex-none"
+        loading="lazy"
+        decoding="async"
+      />
+      <p class="text-sm text-cream/80">
+        Dreaming Creek Brewery — locally brewed, locally loved. Pull up a seat and stay awhile.
+      </p>
+    </div>
+
+    <!-- Location & contact -->
+    <div class="text-sm leading-6">
+      <h3 class="mb-2 font-semibold text-cream">Visit</h3>
+      <p class="text-cream/80">
+        Richmond, Kentucky<br />
+        <a href="tel:+18595550123" class="hover:text-amber"> (859) 555-0123</a><br />
+        <a href="mailto:hello@dreamingcreek.example.com" class="hover:text-amber">hello@dreamingcreek.example.com</a>
+      </p>
+    </div>
+
+    <!-- Quick links -->
+    <nav aria-label="Footer" class="text-sm">
+      <h3 class="mb-2 font-semibold text-cream">Links</h3>
+      <ul class="space-y-1 text-cream/80">
+        <li><a class="hover:text-amber" href="/beers">Beers</a></li>
+        <li><a class="hover:text-amber" href="/events">Events</a></li>
+        <li><a class="hover:text-amber" href="/food-trucks">Food Trucks</a></li>
+        <li><a class="hover:text-amber" href="/taproom">Taproom</a></li>
+        <li><a class="hover:text-amber" href="/about">About</a></li>
+        <li><a class="hover:text-amber" href="/contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="border-t border-white/10 py-4 text-center text-xs text-cream/60">
+    © {year} Dreaming Creek Brewery · Richmond, Kentucky
+  </div>
+</footer>
